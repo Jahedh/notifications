@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getAllUserCommentsByPost, groupCommentsByUser } from '../controller/sortComments';
+import { getAllUserCommentsByPost, groupCommentsByUser } from '../controller/sortNotifications';
 
 const router = Router();
 
@@ -10,10 +10,10 @@ router.get('/', (req: Request, res: Response) => {
 
 router.get('/posts', (req: Request, res: Response) => {
     const { page = 1, pageSize = 1 } = req.query;
+    
+    // more Granular pagination will be on the endpoint to fetch data for a post id
     const parsedPage = parseInt(page as string, 10);
     const parsedPageSize = parseInt(pageSize as string, 10);
-
-    // Validate parsedPage and parsedPageSize to ensure they are positive integers
 
     const startIndex = (parsedPage - 1) * parsedPageSize;
     const endIndex = parsedPage * parsedPageSize;
