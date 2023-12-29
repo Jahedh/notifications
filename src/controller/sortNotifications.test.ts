@@ -1,5 +1,5 @@
 import { getAllUserCommentsByPost } from './sortNotifications'
-import * as constants from './testData/constants';
+import * as notifications from './testData/testNotifications';
 
 describe('getAllUserCommentsByPost', () => {
     test('it should return an array of UserCommentsByPost', () => {
@@ -8,7 +8,7 @@ describe('getAllUserCommentsByPost', () => {
     });
 
     test('it should handle Comment type properly', () => {
-        jest.spyOn(constants, 'LISTOFNOTICATIONS', 'get').mockReturnValue([
+        jest.spyOn(notifications, 'LISTOFNOTICATIONS', 'get').mockReturnValue([
             { type: 'Comment', post: { id: 'post1', title: 'Post 1' }, comment: { id: 'comment1', commentText: 'Comment 1' }, user: { id: 'user1', name: 'User 1' } },
         ]);
         const result = getAllUserCommentsByPost();

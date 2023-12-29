@@ -1,5 +1,5 @@
 import express from 'express';
-import commentsRoutes from './routes/notifications';
+import notificationsRoutes from './routes/notifications';
 import * as prometheus from 'prom-client';
 
 const httpRequestDurationMicroseconds = new prometheus.Histogram({
@@ -18,8 +18,8 @@ const requestsTotal = new prometheus.Counter({
 export const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json()); // Add this line to enable JSON parsing in the request body
-app.use('/comments', commentsRoutes); // Add this line to mount the Task API routes
+app.use(express.json());
+app.use('/notifications', notificationsRoutes);
 
 app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Hello, TypeScript Express!');
@@ -29,20 +29,21 @@ app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
 
-//set middleware to capture metrics time taken and total requests
+// set middleware to capture metrics time taken and total requests
 app.use((req, res, next) => {
   const end = httpRequestDurationMicroseconds.startTimer();
+  
   res.on('finish', () => {
     end({ method: req.method, route: req.route ? req.route.path : 'unknown' });
-    requestsTotal.inc({ endpoint: req.path });
+    requestsTotal.inc({ endpoint: req.path }); 
   });
+
   next();
 });
 
-//expose an endpoint
 app.get('/metrics', async (req, res) => {
   res.set('Content-Type', prometheus.register.contentType);
-  
+
   try {
     const metrics = await prometheus.register.metrics();
     res.end(metrics);
@@ -50,4 +51,8 @@ app.get('/metrics', async (req, res) => {
     console.error('Error generating metrics:', error);
     res.status(500).end('Internal Server Error');
   }
+});
+
+app.get('/notification', (req, res) => {
+  requestsTotal.inc({ endpoint: '/notifications' });
 });
