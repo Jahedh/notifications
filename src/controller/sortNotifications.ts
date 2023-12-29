@@ -116,6 +116,8 @@ export function getUserNotificationsByPostId(postId: string, page: number, pageS
 
   if (userCommentsByPost) {
     // Apply pagination if you don't want to render everything in the front end
+    /* Some sort of caching here would be great, so it doesn't need to re-create the
+       whole file again when you request the same postId multiple times for pagination */
     const startIndex = (page - 1) * pageSize;
     const endIndex = page * pageSize;
     //added total even if you load less
